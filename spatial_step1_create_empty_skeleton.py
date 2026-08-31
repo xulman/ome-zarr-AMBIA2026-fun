@@ -9,14 +9,14 @@ import dask.array as da
 
 shape = (64,128,128)
 chunks = (64,64,64)
-file_path = 'data/example_1x2x2.ome.zarr'
+file_path = 'data/example_1x2x2.zarr'
 
 
 def print_help():
     print("How to run this inside Python interpreter:")
-    print('import step1_spatial_create_empty_skeleton as S1')
-    print('import step2_spatial_contribute_chunk as S2')
-    print('import step3_spatial_add_pyramids as S3')
+    print('import spatial_step1_create_empty_skeleton as S1')
+    print('import spatial_step2_contribute_chunk as S2')
+    print('import spatial_step3_add_pyramids as S3')
     print('S1.main()')
     print('S2.main()')
     print('S3.main()')

@@ -1,6 +1,6 @@
 import numpy as np
 import ngff_zarr as nz
-import step1_time_create_empty_skeleton as S1
+import time_step1_create_empty_skeleton as S1
 
 
 def write_whole_timepoint(time_index: int, base_value = 100):

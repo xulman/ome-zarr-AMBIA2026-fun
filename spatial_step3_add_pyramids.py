@@ -1,6 +1,6 @@
 import ngff_zarr as nz
 import dataclasses
-import step1_spatial_create_empty_skeleton as S1
+import spatial_step1_create_empty_skeleton as S1
 
 
 def main():

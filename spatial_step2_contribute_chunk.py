@@ -1,6 +1,6 @@
 import numpy as np
 import ngff_zarr as nz
-import step1_spatial_create_empty_skeleton as S1
+import spatial_step1_create_empty_skeleton as S1
 
 def lbnd(index_vector, chunk_size, axis_index):
     return index_vector[axis_index] * chunk_size[axis_index]
