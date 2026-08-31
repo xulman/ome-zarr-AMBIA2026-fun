@@ -6,10 +6,11 @@ import step1_create_empty_skeleton as S1
 def main():
     # read the skeleton/reference OME-Zarr, and its base image fully
     ms_orig = nz.from_ngff_zarr(S1.file_path)
+    chunks = ms_orig.images[0].data.chunksize
 
     # re-do the metadata again, by building a fresh new multiscales object that
     # pulls in the pyramids/scales and which will blend with the original metadata
-    ms_built = nz.to_multiscales(ms_orig.images[0], scale_factors=[2, 4], chunks=S1.chunks)
+    ms_built = nz.to_multiscales(ms_orig.images[0], scale_factors=[2, 4], chunks=chunks)
 
     start = 1  # keep levels < start from disk, append levels >= start
     merged_datasets = ms_orig.metadata.datasets[:start] + ms_built.metadata.datasets[start:]
