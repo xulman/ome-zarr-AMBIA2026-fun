@@ -12,6 +12,17 @@ chunks = (64,64,64)
 file_path = 'data/example_1x2x2.ome.zarr'
 
 
+def print_help():
+    print("How to run this inside Python interpreter:")
+    print('import step1_create_empty_skeleton as S1')
+    print('import step2_contribute_chunk as S2')
+    print('import step3_add_pyramids as S3')
+    print('S1.main()')
+    print('S2.main()')
+    print('S3.main()')
+
+
+
 def main():
     # skeleton empty array, that's lazily filled, so no 0.0f values/pixels do exist yet
     empty_initial_image = da.zeros(shape, dtype='float32', chunks=chunks)
