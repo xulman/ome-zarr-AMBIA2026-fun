@@ -9,6 +9,7 @@ import dask.array as da
 
 shape = (10,64,128,128)
 chunks = (1,64,64,64)
+scale_factors = [2,4]
 file_path = 'data/example_Tx1x2x2.ome.zarr'
 
 
@@ -28,7 +29,7 @@ def main():
     empty_initial_image = da.zeros(shape, dtype='float32', chunks=chunks)
     image = nz.to_ngff_image(empty_initial_image, dims=["t", "z", "y", "x"])
 
-    multiscales = nz.to_multiscales(image, scale_factors=[2,4], chunks=chunks, cache=False)
+    multiscales = nz.to_multiscales(image, scale_factors=scale_factors, chunks=chunks, cache=False)
 
     # NGFF v0.6+ demo/intermezzo...
     # An affine that maps the intrinsic pixel system to some "output" system.
