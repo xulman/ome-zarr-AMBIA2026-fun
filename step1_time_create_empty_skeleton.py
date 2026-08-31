@@ -7,9 +7,9 @@ from ngff_zarr.v06.zarr_metadata import (
 )
 import dask.array as da
 
-shape = (64,128,128)
-chunks = (64,64,64)
-file_path = 'data/example_1x2x2.ome.zarr'
+shape = (10,64,128,128)
+chunks = (1,64,64,64)
+file_path = 'data/example_Tx1x2x2.ome.zarr'
 
 
 def print_help():
@@ -26,9 +26,9 @@ def print_help():
 def main():
     # skeleton empty array, that's lazily filled, so no 0.0f values/pixels do exist yet
     empty_initial_image = da.zeros(shape, dtype='float32', chunks=chunks)
-    image = nz.to_ngff_image(empty_initial_image, dims=["z", "y", "x"])
+    image = nz.to_ngff_image(empty_initial_image, dims=["t", "z", "y", "x"])
 
-    multiscales = nz.to_multiscales(image, scale_factors=[], chunks=chunks, cache=False)
+    multiscales = nz.to_multiscales(image, scale_factors=[2,4], chunks=chunks, cache=False)
 
     # NGFF v0.6+ demo/intermezzo...
     # An affine that maps the intrinsic pixel system to some "output" system.
@@ -55,7 +55,8 @@ def main():
     multiscales.metadata.coordinateTransformations = [affine]
 
     # final write to a drive/store
-    nz.to_ome_zarr(file_path, multiscales, version="0.6")
+    nz.to_ome_zarr(file_path, multiscales, version="0.6", metadata_only=True)
+    # NB: if metadata_only was omitted, it still produces "only the jsons"
     print(f"written {file_path}")
 
 
