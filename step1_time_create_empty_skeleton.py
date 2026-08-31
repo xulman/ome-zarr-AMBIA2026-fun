@@ -17,10 +17,8 @@ def print_help():
     print("How to run this inside Python interpreter:")
     print('import step1_time_create_empty_skeleton as S1')
     print('import step2_time_contribute_chunk as S2')
-    print('import step3_time_add_pyramids as S3')
     print('S1.main()')
     print('S2.main()')
-    print('S3.main()')
 
 
 
