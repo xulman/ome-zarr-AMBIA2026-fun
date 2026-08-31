@@ -4,31 +4,38 @@ import step1_time_create_empty_skeleton as S1
 
 
 def main():
+    # THIS IS THE TIME POINT TO BE FILLED
+    T = 2
+
     # read the skeleton/reference OME-Zarr, and get path to the base-level image
-    multiscales = nz.from_ngff_zarr(S1.file_path, validate=False)
-    path = multiscales.metadata.datasets[0].path
+    multiscales = nz.from_ngff_zarr(S1.file_path)
 
     # read the daskarray facade around the image array
     # (the image is initially an empty skeleton, but it gets
-    #  filled progressively with a code like here below)
-    image = nz.open_array(S1.file_path, path)
-
-    # plan A:
-    # example: one chunk write
-    # beware: writes to the drive immediately!
-    image[0:64,0:64,0:64] = 99.1
-
-    # check here the store content....
+    #  filled progressively with a code like here below),
+    # and do this for every pyramid level
+    paths = [ ds.path for ds in multiscales.metadata.datasets ]
+    images = [ nz.open_array(S1.file_path, path) for path in paths ]
 
     # plan B
-    # example: write progressively first into a buffer
-    buf = np.zeros(image.chunks, dtype=image.dtype)   # one chunk's worth
+    # example: write progressively full time point into a buffer at base/full-resolution
+    buf = np.zeros(images[0].shape[1:], dtype=images[0].dtype)
     # ... fill buf progressively as data arrives ...
     buf[ 0:32,:,:] = 128.1
     buf[32:64,:,:] = 182.1
-    # publish: one full-chunk, chunk-aligned write → single encode, single write
+
+    # turn 'buf' into a "one-time" multiscales (that would be copied into the original dataset)
+    base_image = nz.to_ngff_image(buf, dims=multiscales.metadata.dimension_names[1:])
+    tmp_multiscales = nz.to_multiscales(base_image, scale_factors=S1.scale_factors, chunks=images[0].chunks[1:])
+    # NB: scale_factors are in OME-Zarr nowhere stored explicitly, we could either compute them,
+    #     or just pull them from the memory we had used when creating the skeleton dataset
+    # NB: this solution uses ngff-zarr's internal code to produce the pyramids,
+    #     not a code of my own (which could compute pyramids that deviate from those from ngff-zarr)
+
+    # publish: one full time point
     # (...benefiting that the write to a store happens immediately)
-    image[0:64,0:64,0:64] = buf
+    for level in range(len(images)):
+        images[level][T] = tmp_multiscales.images[level].data
 
 
 if __name__ == "__main__":
